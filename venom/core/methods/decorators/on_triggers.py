@@ -216,16 +216,5 @@ class MyDecorator(Client):
             b_e_m_h = self.bot.add_handler(EditedMessageHandler(template, filtered), flt.group)
             Config.HANDLERS[func.__name__] = ((m_h, e_m_h), (b_m_h, b_e_m_h))
             return func
-            
+
         return inner
-
-
-def _add_handler(client: Client, template: Callable, filter_: RawFilter, group: int = 0):
-    """ adds handler """
-    #message_handler = pyrogram.handlers.MessageHandler(template, filter_)
-    #edited_message_handler = pyrogram.handlers.EditedMessageHandler(template, filter_)
-    #client.add_handler(message_handler, group)
-    #client.add_handler(edited_message_handler, group)
-    #client.bot.add_handler(message_handler, group)
-    #client.bot.add_handler(edited_message_handler, group)
-    #Config.HA

@@ -139,7 +139,12 @@ def extract_id(mention):
     raise UserIdInvalid
 
 
-async def report_user(chat: int, user_id: int, msg_id: int, reason: str):
+async def report_user(
+        # chat: int,
+        user_id: int,
+        msg_id: int,
+        reason: str
+):
     if ("nsfw" or "NSFW" or "porn") in reason:
         reason_ = InputReportReasonPornography()
         for_ = "pornographic message"
@@ -153,7 +158,7 @@ async def report_user(chat: int, user_id: int, msg_id: int, reason: str):
     # if not isinstance(user_, User) or not isinstance(user_.access_hash, int):
     # return
     # input_peer_user = InputPeerUser(user_id=user_id, access_hash=user_.access_hash)
-    resolved_chat = await venom.venom.resolve_peer(chat)
+    resolved_chat = await venom.venom.resolve_peer(user_id)
     # chat_ = input_peer_chat.InputPeerChat(chat_id=resolved_chat.channel_id)
     reporting = Report(
         peer=resolved_chat,
@@ -161,7 +166,7 @@ async def report_user(chat: int, user_id: int, msg_id: int, reason: str):
         reason=reason_,
         message=for_
     )
-    reported = await venom.venom.invoke(reporting)
+    await venom.venom.invoke(reporting)
     return for_
 
 
@@ -315,8 +320,30 @@ class CurrentTime:
         """ default format """
         return f"{self.h}:{self.m}:{self.s} {self.stamp}"
 
+    @staticmethod
+    def in_format(formats: str, hour_diff: float) -> str:
+        """ send date and time in full format using time module | DD - date | MM - month in digit | M - month in string |
+        YYYY - 4 digit year | YY - 2 digit year | hh-24 - hour in 24 format | hh-12 - hour in 12 format | mm - minutes |
+        AP - include AM/PM """
 
-def userfriendly(id: int) -> bool:
+        diff_in_sec = hour_diff * 3600
+        time_in_sec = time.time() + diff_in_sec
+        format_ = (
+            formats.replace("DD", "%d")
+            .replace("MM", "%m")
+            .replace("M", "%h")
+            .replace("YYYY", "%Y")
+            .replace("YY", "y")
+            .replace("hh-24", "%H")
+            .replace("hh-12", "%I")
+            .replace("mm", "%M")
+            .replace("AP", "%p")
+        )
+        date_time_ = time.strftime(format_, time.gmtime(time_in_sec))
+        return date_time_
+
+
+def user_friendly(id: int) -> bool:
     """ check user is owner or sudo user """
     if id == Config.OWNER_ID:
         return True

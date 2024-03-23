@@ -56,7 +56,7 @@ help_["commands"].append(
 
 @venom.trigger("eval")
 async def evaluate(_, message: MyMessage):
-    """evaluate your code"""
+    """ evaluate your code """
     cmd = await init_func(message)
     mono_ = True if "-m" not in message.flags else False
     tele_ = True if "-tg" in message.flags else False
@@ -101,7 +101,7 @@ async def evaluate(_, message: MyMessage):
     sys.stdout = old_stdout
     sys.stderr = old_stderr
     evaluation = exc or stderr or stdout or ret_val
-    output = f"**>** `{cmd}`\n\n"
+    output = f"**>** ```python\n{cmd}```\n\n"
     if evaluation is not None:
         if mono_:
             try:
@@ -157,9 +157,9 @@ async def term_(_, message: MyMessage):
         await asyncio.sleep(0.5)
         if count >= Config.EDIT_SLEEP_TIMEOUT * 2:
             count = 0
-            out_data = f"<pre>{output}{t_obj.read_line}</pre>"
+            out_data = f"<pre language=shell>{output}{t_obj.read_line}</pre>"
             await message.try_to_edit(out_data, parse_mode=ParseMode.HTML)
-    out_data = f"<pre>{output}{t_obj.get_output}</pre>"
+    out_data = f"<pre language=shell>{output}{t_obj.get_output}</pre>"
     await message.edit_or_send_as_file(
         out_data, parse_mode=ParseMode.HTML, file_name="term.txt", caption=cmd
     )
@@ -173,14 +173,14 @@ help_["commands"].append(
         "flags": {"-c": "check status"},
         "usage": "Enable/disable developer mode",
         "syntax": "{tr}dev_mode true/false",
-        "sudo": False,
+        "sudo": False
     }
 )
 
 
 @venom.trigger("dev_mode")
 async def developer_mode(_, message: MyMessage):
-    """toggle developer mode"""
+    """ toggle developer mode """
     if message.from_user.id != Config.OWNER_ID:
         return await message.edit(
             "`Only the owner of the bot can use this command.`", del_in=5
@@ -196,10 +196,10 @@ async def developer_mode(_, message: MyMessage):
         "Reply `Yes, I'm fully aware of the consequences.` to continue."
     )
     try:
-        resp_ = await warn_.wait(filters=filters.user(Config.OWNER_ID))
+        resp_ = await warn_.wait_for(filters=filters.user(Config.OWNER_ID))
     except asyncio.TimeoutError:
         return await message.reply("`Response not found... Process aborted.`", del_in=5)
-    if resp_.text != "Yes, I'm fully aware of the consequences.":
+    if resp_.text.upper() != "YES, I'M FULLY AWARE OF THE CONSEQUENCES.":
         return await message.edit(
             f"Your response **{resp_.text}** does not match.\n`Aborting process...`",
             del_in=5,
@@ -218,7 +218,6 @@ async def developer_mode(_, message: MyMessage):
         {"$set": {"switch": Config.DEVELOPER_MODE}},
         upsert=True,
     )
-
 
 ########################################################################################################################
 

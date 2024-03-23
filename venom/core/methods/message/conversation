@@ -39,13 +39,13 @@ async def convo_handler(client: Client, message: Message):
     message.continue_propagation()
 
 
-#venom.add_handler(MessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0)
+venom.add_handler(MessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0)
 venom.add_handler(
     EditedMessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0
 )
-#venom.bot.add_handler(
-#    MessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0
-#)
+venom.bot.add_handler(
+   MessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0
+)
 venom.bot.add_handler(
     EditedMessageHandler(callback=convo_handler, filters=CONVO_FILTER), group=0
 )
@@ -103,7 +103,7 @@ class Conversation:
         """
         try:
             async with asyncio.timeout(timeout or self.timeout):
-                while not Config.CONVO_DICT[self.chat_id]["response"]:
+                while not (Config.CONVO_DICT[self.chat_id]["response"]):
                     await asyncio.sleep(0)
             return Config.CONVO_DICT[self.chat_id]["response"]
         except asyncio.TimeoutError:
