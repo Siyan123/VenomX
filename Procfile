@@ -1,1 +1,1 @@
-web: bash run
+worker: bash run
