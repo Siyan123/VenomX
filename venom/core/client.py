@@ -143,7 +143,7 @@ class Venom(CustomVenom):
         if SecureConfig().BOT_TOKEN:
             return True
         return False
-
+    has_bot = hasbot
     @property
     def isuser(self):
         if SecureConfig().STRING_SESSION and Config.USER_MODE:
